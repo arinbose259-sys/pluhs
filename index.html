@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arin's Olympiad Round</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  /* lab-notebook neutrals: paper biased faintly green, ink biased blue */
+  --bg:#f2f4f1; --panel:#fbfcfa; --ink:#182028; --muted:#5d6b70; --line:#dde2dc;
+  --accent:#0d6b6e; --accent-ink:#f7fbfa; --accent-soft:#e2efee;
+  --amber:#8a5a10; --amber-soft:#f6ecd8;
+  --ok:#186c45; --okbg:#e4f1e8; --bad:#9e2b21; --badbg:#f8e8e6;
+  --chip:#e9ede8; --rule:#cfd8d2;
+  --shadow:0 1px 1px rgba(24,32,40,.04),0 6px 18px rgba(24,32,40,.06);
+  --display:"Archivo",Helvetica Neue,Arial,sans-serif;
+  --body:"Source Sans 3",-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101614; --panel:#18201e; --ink:#e6ece8; --muted:#96a5a0; --line:#2a3532;
+    --accent:#4fd1c5; --accent-ink:#08201f; --accent-soft:#122a29;
+    --amber:#e0b463; --amber-soft:#2a2418;
+    --ok:#63d69c; --okbg:#122a20; --bad:#ff9086; --badbg:#2c1917;
+    --chip:#1f2926; --rule:#2f3b37;
+    --shadow:0 1px 1px rgba(0,0,0,.5),0 8px 22px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101614; --panel:#18201e; --ink:#e6ece8; --muted:#96a5a0; --line:#2a3532;
+  --accent:#4fd1c5; --accent-ink:#08201f; --accent-soft:#122a29;
+  --amber:#e0b463; --amber-soft:#2a2418;
+  --ok:#63d69c; --okbg:#122a20; --bad:#ff9086; --badbg:#2c1917;
+  --chip:#1f2926; --rule:#2f3b37;
+  --shadow:0 1px 1px rgba(0,0,0,.5),0 8px 22px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+  font-size:16.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:660px;margin:0 auto;padding-block:24px 72px;padding-left:18px;padding-right:18px;
+  display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:24px 24px 26px;box-shadow:var(--shadow)}
+h1{font-family:var(--display);font-weight:700;font-size:27px;line-height:1.15;margin:0;
+  letter-spacing:-.015em;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:13px;margin:26px 0 2px;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.sub{color:var(--muted);font-size:14.5px;margin:6px 0 0}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 0}
+.chip{background:var(--chip);color:var(--muted);border-radius:3px;padding:4px 9px;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.chip.ev{background:var(--accent-soft);color:var(--accent)}
+.chip.lvl{background:var(--amber-soft);color:var(--amber)}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  border-radius:5px;padding:11px 17px;font-size:15px;font-weight:600;cursor:pointer;
+  font-family:var(--body);transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.bar{height:3px;background:var(--rule);border-radius:0;overflow:hidden;margin:9px 0 0}
+.bar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s ease}
+.meta{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--muted);font-variant-numeric:tabular-nums}
+.meta b{color:var(--ink);font-weight:600}
+.q{font-family:var(--display);font-weight:600;font-size:20px;margin:20px 0 18px;line-height:1.4;text-wrap:pretty}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;gap:11px;width:100%;text-align:left;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);border-radius:5px;padding:13px 15px;font-size:16px;
+  cursor:pointer;font-family:var(--body);line-height:1.45;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:disabled{cursor:default}
+.opt .k{font-family:var(--mono);font-weight:600;color:var(--muted);flex:0 0 auto}
+.opt.correct{background:var(--okbg);border-color:var(--ok)}
+.opt.correct .k{color:var(--ok)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.opt.wrong .k{color:var(--bad)}
+.why{border-left:2px solid var(--accent);background:var(--chip);padding:14px 16px;
+  margin:18px 0 0;font-size:15.5px;border-radius:0 4px 4px 0}
+.why b{display:block;margin-bottom:5px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+#next{margin-top:18px}
+.why.miss{border-left-color:var(--bad)} .why.miss b{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin:8px 0 0}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:600;border-bottom-color:var(--rule)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.scores{display:flex;gap:34px;flex-wrap:wrap;margin:18px 0 0}
+.big{font-family:var(--mono);font-size:46px;font-weight:600;letter-spacing:-.03em;line-height:1;
+  font-variant-numeric:tabular-nums}
+.big + .sub{margin-top:6px;font-size:13px}
+.tag-ok{color:var(--ok);font-weight:600} .tag-bad{color:var(--bad);font-weight:600}
+.hint{font-size:12.5px;color:var(--muted);margin:0;text-align:center}
+.sheet{display:none}
+.sheet .item{margin:0 0 15px;page-break-inside:avoid}
+.sheet ol{margin:6px 0 0 20px;padding:0}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
+@media print{
+  body{background:#fff;color:#000}
+  .noprint{display:none !important}
+  .sheet{display:block !important;font-family:var(--body)}
+  .sheet .item{font-size:11.5pt}
+}
+@media (max-width:480px){
+  .wrap{padding-left:16px;padding-right:16px;padding-block:18px 52px}
+  .card{padding:19px 17px 22px} .big{font-size:38px} h1{font-size:23px} .q{font-size:18.5px}
+  .scores{gap:24px}
+}
+</style>
+</head>
+<body style="margin:0">
+
+<div class="wrap">
+
+<div id="app" class="card noprint"></div>
+
+<div class="sheet" id="sheet"></div>
+
+<p class="hint noprint" id="foot"></p>
+</div>
+
+<script>
+const DATA = {"student": "Arin", "grade": "Grade 5", "date": "2026-09-10", "day": "Day 1", "track": "San Joaquin County Elementary Science Olympiad (Division A, Gr. 3-6)", "focus": "Broad screening sweep - Simple Machines, Anatomy, Astronomy, Optics, Glaciers, Insects, Mystery Powder, Metric", "target_minutes": 35, "seconds_per_question": 70, "questions": [{"cat": "Simple Machines", "lvl": "Grade 5", "q": "A doorknob is an example of which simple machine?", "opts": ["Lever", "Wheel and axle", "Pulley", "Wedge"], "a": 1, "why": "A doorknob is a big wheel turning a small axle, so a small twist of your hand becomes a strong turning force on the latch. A lever pivots on a fulcrum. A pulley runs a rope over a grooved wheel. A wedge splits things apart."}, {"cat": "Simple Machines", "lvl": "Grade 5", "q": "In which class of lever is the fulcrum between the effort and the load?", "opts": ["First class", "Second class", "Third class", "Fourth class"], "a": 0, "why": "First class: fulcrum in the middle (seesaw, crowbar, scissors). Second class: the LOAD is in the middle (wheelbarrow, nutcracker). Third class: the EFFORT is in the middle (tweezers, fishing rod). There is no fourth class of lever."}, {"cat": "Simple Machines", "lvl": "Grade 6", "q": "A ramp is 6 m long and lifts a box to a height of 2 m. What is the ideal mechanical advantage of the ramp?", "opts": ["2", "3", "8", "12"], "a": 1, "why": "For an inclined plane, IMA = length of slope divided by height = 6 / 2 = 3. You push with one third of the force, but you push over three times the distance. Answers 8 and 12 come from adding or multiplying instead of dividing."}, {"cat": "Simple Machines", "lvl": "Grade 7", "q": "A pulley system has 4 rope strands supporting a 200 N load. Ignoring friction, how much effort force is needed to lift it?", "opts": ["800 N", "200 N", "50 N", "25 N"], "a": 2, "why": "Count the supporting strands: the load is shared among all 4, so effort = 200 / 4 = 50 N. The trade-off is distance - you must pull 4 m of rope to raise the load 1 m. Work in equals work out."}, {"cat": "A is for Anatomy", "lvl": "Grade 5", "q": "Which type of blood vessel carries blood AWAY from the heart?", "opts": ["Vein", "Artery", "Capillary", "Venule"], "a": 1, "why": "Artery = Away. Veins carry blood back toward the heart, and capillaries are the tiny vessels where oxygen and nutrients actually pass into your cells. A venule is just a very small vein."}, {"cat": "A is for Anatomy", "lvl": "Grade 5", "q": "Which heart chamber pumps oxygen-rich blood out to the whole body?", "opts": ["Right atrium", "Right ventricle", "Left atrium", "Left ventricle"], "a": 3, "why": "The left ventricle has the thickest muscular wall because it must push blood to your toes and back. The right ventricle only pumps to the lungs, which are close by. Atria (the top chambers) receive blood, they do not do the big pumping."}, {"cat": "A is for Anatomy", "lvl": "Grade 6", "q": "In the respiratory system, oxygen passes into the blood in tiny air sacs called the:", "opts": ["Bronchi", "Alveoli", "Trachea", "Diaphragm"], "a": 1, "why": "Alveoli are microscopic grape-like sacs wrapped in capillaries - that is where gas exchange happens. The trachea is the windpipe, the bronchi are the two big branches into each lung, and the diaphragm is the muscle that pulls air in."}, {"cat": "A is for Anatomy", "lvl": "Grade 6", "q": "Which organ of the urinary system filters wastes out of the blood to make urine?", "opts": ["Bladder", "Ureter", "Kidney", "Urethra"], "a": 2, "why": "Each kidney holds about a million tiny filters called nephrons. Then the ureter carries urine down to the bladder, the bladder stores it, and the urethra carries it out. Learn that order - it is a classic test question."}, {"cat": "A is for Anatomy", "lvl": "Grade 7", "q": "Which endocrine gland releases insulin to lower blood sugar?", "opts": ["Thyroid", "Pancreas", "Adrenal gland", "Pituitary gland"], "a": 1, "why": "The pancreas releases insulin (lowers blood sugar) and glucagon (raises it). The thyroid controls metabolic rate, the adrenals release adrenaline for fight-or-flight, and the pituitary is the master gland that bosses the others around."}, {"cat": "Astronomy", "lvl": "Grade 5", "q": "What force keeps the planets in orbit around the Sun?", "opts": ["Magnetism", "Gravity", "Friction", "Air pressure"], "a": 1, "why": "Gravity pulls the planets toward the Sun while their forward motion carries them sideways, and the combination is an orbit. There is no air in space, so air pressure and friction are not involved, and the Sun's magnetism is far too weak to hold planets."}, {"cat": "Astronomy", "lvl": "Grade 6", "q": "What is the correct life cycle for a medium star like our Sun?", "opts": ["Nebula, main sequence, red giant, white dwarf", "Nebula, red giant, supernova, black hole", "Main sequence, nebula, white dwarf, red giant", "Red giant, nebula, main sequence, neutron star"], "a": 0, "why": "A star is born in a nebula, spends most of its life on the main sequence fusing hydrogen, swells into a red giant, then sheds its outer layers and leaves a white dwarf. Supernovas, neutron stars and black holes only happen to stars much more massive than the Sun."}, {"cat": "Astronomy", "lvl": "Grade 6", "q": "A Hertzsprung-Russell (H-R) diagram plots a star's brightness against its:", "opts": ["Distance from Earth", "Surface temperature (color)", "Age in years", "Number of planets"], "a": 1, "why": "The H-R diagram is luminosity versus surface temperature, and temperature increases toward the LEFT. Most stars fall on a diagonal band called the main sequence. Hot blue stars sit upper left, cool red dwarfs lower right."}, {"cat": "Astronomy", "lvl": "Grade 7", "q": "Star A and Star B look equally bright from Earth, but Star B is twice as far away. What must be true?", "opts": ["They give off exactly the same amount of light", "Star B actually gives off more light", "Star A actually gives off more light", "There is no way to compare them"], "a": 1, "why": "Brightness falls off with the square of distance, so a star twice as far away looks four times dimmer. If Star B still looks just as bright, it must really be pouring out about four times more light. Apparent brightness is not the same as true luminosity."}, {"cat": "Optics and Light", "lvl": "Grade 5", "q": "When light bounces off a flat mirror, the angle of incidence is equal to the angle of:", "opts": ["Refraction", "Reflection", "Dispersion", "Absorption"], "a": 1, "why": "That is the law of reflection: the angle coming in equals the angle going out, both measured from the normal line. Refraction is bending as light enters a new material, dispersion is splitting white light into colors, and absorption is light being soaked up."}, {"cat": "Optics and Light", "lvl": "Grade 5", "q": "A straw looks bent where it enters a glass of water. This is caused by:", "opts": ["Reflection", "Refraction", "Diffraction", "Absorption"], "a": 1, "why": "Light travels slower in water than in air, so it changes direction at the surface - that is refraction. Your brain still assumes the light traveled in a straight line, so the straw appears broken."}, {"cat": "Optics and Light", "lvl": "Grade 6", "q": "A red apple looks red because it:", "opts": ["Creates red light of its own", "Reflects red light and absorbs the other colors", "Absorbs red light and reflects the other colors", "Refracts only red light"], "a": 1, "why": "Objects do not make light, they sort it. The apple's skin absorbs most wavelengths and bounces red back to your eye. A white object reflects nearly all colors, a black one absorbs nearly all of them."}, {"cat": "Optics and Light", "lvl": "Grade 7", "q": "Which lens brings parallel rays of light together at a focal point?", "opts": ["Concave lens (thinner in the middle)", "Convex lens (thicker in the middle)", "A flat pane of glass", "A plane mirror"], "a": 1, "why": "A convex lens is a converging lens - it bends rays inward to a focal point, which is why it works as a magnifier and forms the image in a camera or your eye. A concave lens is diverging: it spreads rays apart."}, {"cat": "Dynamic Planet: Glaciers", "lvl": "Grade 5", "q": "A glacier is best described as:", "opts": ["A frozen lake", "A large mass of ice that slowly moves over land", "An iceberg floating in the ocean", "Packed snow that never moves"], "a": 1, "why": "The key word is MOVES. Snow piles up, compresses into ice, and the sheer weight makes it flow downhill like very slow, very cold syrup. A frozen lake and an iceberg are ice, but they are not flowing over land."}, {"cat": "Dynamic Planet: Glaciers", "lvl": "Grade 6", "q": "A wide U-shaped valley with steep sides was most likely carved by:", "opts": ["A river", "Wind", "A glacier", "An earthquake"], "a": 2, "why": "Glaciers are wide and grind out the whole valley floor, leaving a U shape - Yosemite Valley is a famous example. Rivers cut down in a narrow line and leave a V-shaped valley. Wind and earthquakes do not carve valleys like this."}, {"cat": "Dynamic Planet: Glaciers", "lvl": "Grade 6", "q": "The unsorted mix of rock, sand and clay that a glacier dumps when it melts is called:", "opts": ["Magma", "Till (which piles up as moraine)", "Lava", "Delta sediment"], "a": 1, "why": "Glacial till is unsorted - boulders and clay all jumbled together - because ice does not separate particles by size. A ridge of till is a moraine. Water-deposited sediment, like in a delta, IS sorted, with heavy grains dropping first."}, {"cat": "Dynamic Planet: Glaciers", "lvl": "Grade 7", "q": "A glacier freezes onto bedrock, then rips chunks loose as it advances. This process is called:", "opts": ["Abrasion", "Plucking", "Deposition", "Chemical weathering"], "a": 1, "why": "Plucking = pulling rock out. Abrasion is the other glacier tool: trapped rocks scrape the bedrock like sandpaper and leave scratches called striations. Deposition is dropping material, not removing it."}, {"cat": "Don't Bug Me", "lvl": "Grade 5", "q": "How many legs does an adult insect have?", "opts": ["6", "8", "10", "It varies by species"], "a": 0, "why": "All adult insects have exactly 6 legs - three pairs, all attached to the thorax. Eight legs means arachnid (spiders, scorpions, ticks), which is a different class entirely. Ten legs is typical of many crustaceans."}, {"cat": "Don't Bug Me", "lvl": "Grade 5", "q": "An insect's body has three main sections: head, thorax, and:", "opts": ["Cephalothorax", "Abdomen", "Carapace", "Mantle"], "a": 1, "why": "Head, thorax, abdomen. Legs and wings attach to the thorax, and digestion and reproduction happen in the abdomen. Spiders instead have a fused cephalothorax plus abdomen - only two sections."}, {"cat": "Don't Bug Me", "lvl": "Grade 6", "q": "Which sequence shows complete metamorphosis?", "opts": ["Egg, nymph, adult", "Egg, larva, pupa, adult", "Egg, pupa, larva, adult", "Larva, egg, adult"], "a": 1, "why": "Complete metamorphosis has four stages and the pupa is where the body is completely rebuilt - butterflies, beetles, flies and bees all do this. Watch the order: larva comes before pupa, never after."}, {"cat": "Don't Bug Me", "lvl": "Grade 7", "q": "A grasshopper hatches looking like a small adult, molts several times, and never forms a pupa. This is:", "opts": ["Complete metamorphosis", "Incomplete metamorphosis", "Regeneration", "Budding"], "a": 1, "why": "Incomplete metamorphosis has only three stages: egg, nymph, adult. Grasshoppers, crickets, dragonflies and true bugs develop this way. Regeneration is regrowing a lost body part, and budding is a form of asexual reproduction."}, {"cat": "Mystery Powder", "lvl": "Grade 5", "q": "Which of these is a CHEMICAL change?", "opts": ["Ice melting", "Sugar dissolving in water", "Iron rusting", "Paper being torn"], "a": 2, "why": "Rusting makes a brand-new substance (iron oxide) and cannot be undone by simply reversing the step - that is chemistry. Melting, dissolving and tearing all change form or appearance while the substance stays chemically the same."}, {"cat": "Mystery Powder", "lvl": "Grade 6", "q": "You place a drop of iodine on a white powder and it turns blue-black. The powder contains:", "opts": ["Salt", "Starch", "Baking soda", "Sugar"], "a": 1, "why": "Iodine turning blue-black is the standard test for starch (cornstarch, flour, potato). Salt, sugar and baking soda leave iodine its normal yellow-brown color. Memorize this one - it appears in Mystery Powder almost every year."}, {"cat": "Mystery Powder", "lvl": "Grade 6", "q": "A white powder fizzes vigorously when vinegar is added. It most likely contains:", "opts": ["Cornstarch", "Table sugar", "Baking soda", "Flour"], "a": 2, "why": "Vinegar is an acid, and it reacts with baking soda (sodium bicarbonate) to release carbon dioxide gas - those are the bubbles. Cornstarch, sugar and flour just sit there or make a paste."}, {"cat": "Mystery Powder", "lvl": "Grade 7", "q": "A powder dissolves fully in water, does NOT fizz with vinegar, and does NOT change iodine. Which test best separates sugar from salt?", "opts": ["Look closely at the color", "Gently heat it - sugar melts and turns brown, salt does not", "Add more water", "Smell the powder"], "a": 1, "why": "Sugar caramelizes and browns with heat, while salt just stays white and needs an extreme temperature to melt. A second good test: salt water conducts electricity but sugar water does not. Color and smell cannot tell them apart, and you never taste an unknown."}, {"cat": "Metric and Measurement", "lvl": "Grade 5", "q": "What is the best unit for the mass of a paperclip?", "opts": ["Kilogram", "Gram", "Liter", "Meter"], "a": 1, "why": "A paperclip is about 1 gram. Kilograms are for things like a textbook or a person, liters measure volume of liquid, and meters measure length. Always ask first: am I measuring mass, volume, or length?"}, {"cat": "Metric and Measurement", "lvl": "Grade 5", "q": "How many milliliters are in 2.5 liters?", "opts": ["25", "250", "2,500", "25,000"], "a": 2, "why": "Milli- means one thousandth, so 1 L = 1,000 mL and 2.5 x 1,000 = 2,500 mL. Going from a bigger unit to a smaller unit, the number always gets bigger."}, {"cat": "Metric and Measurement", "lvl": "Grade 6", "q": "A rock has a mass of 60 g and a volume of 20 cm3. What is its density?", "opts": ["3 g/cm3", "0.33 g/cm3", "80 g/cm3", "1,200 g/cm3"], "a": 0, "why": "Density = mass divided by volume = 60 / 20 = 3 g/cm3. Since that is greater than water's 1 g/cm3, this rock sinks. Dividing the wrong way gives 0.33, and adding or multiplying gives the other two traps."}, {"cat": "Metric and Measurement", "lvl": "Grade 7", "q": "A graduated cylinder holds 50 mL of water. You drop in a rock and the level rises to 68 mL. What is the rock's volume?", "opts": ["118 mL", "68 mL", "18 mL", "50 mL"], "a": 2, "why": "This is water displacement: the rock pushes aside exactly its own volume, so 68 - 50 = 18 mL (which equals 18 cm3). It is the go-to method for finding the volume of any irregular object."}]};
+const KEY = "scioly:" + DATA.student.toLowerCase() + ":" + DATA.date;
+
+/* ---------- state ---------- */
+let order = DATA.questions.map((_,i)=>i);
+let idx = 0, answers = [], startedAt = null, tick = null;
+
+/* keep questions grouped by category but ramp difficulty inside each,
+   and shuffle the option order per question with a stable per-session seed */
+function prep(){
+  const byCat = {};
+  DATA.questions.forEach((q,i)=>{ (byCat[q.cat]=byCat[q.cat]||[]).push(i); });
+  const cats = Object.keys(byCat);
+  order = [];
+  cats.forEach(c => byCat[c].forEach(i => order.push(i)));
+  order.forEach(i=>{
+    const q = DATA.questions[i];
+    if(q._opts) return;
+    const pairs = q.opts.map((t,j)=>({t, correct:j===q.a}));
+    for(let k=pairs.length-1;k>0;k--){ const r=Math.floor(Math.random()*(k+1)); [pairs[k],pairs[r]]=[pairs[r],pairs[k]]; }
+    q._opts = pairs.map(p=>p.t);
+    q._a = pairs.findIndex(p=>p.correct);
+  });
+}
+
+function fmt(s){ const m=Math.floor(s/60), r=s%60; return m+":"+String(r).padStart(2,"0"); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ---------- screens ---------- */
+function screenStart(){
+  clearInterval(tick);
+  const hist = loadHistory();
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <p class="eyebrow">${esc(DATA.date)} &middot; ${esc(DATA.day)}</p>
+    <h1>${esc(DATA.student)}'s Practice Round</h1>
+    <p class="sub">${esc(DATA.track)}</p>
+    <div class="chips">
+      <span class="chip ev">${DATA.questions.length} stations</span>
+      <span class="chip">${DATA.target_minutes} min target</span>
+      <span class="chip">${new Set(DATA.questions.map(q=>q.cat)).size} events</span>
+    </div>
+    <div class="why" style="margin-top:16px">
+      <b>Today's focus</b>${esc(DATA.focus)}
+    </div>
+    <p class="sub" style="margin-bottom:18px">Rules: one question at a time, no going back, no notes.
+    Read the explanation after <em>every</em> answer &mdash; right or wrong. That is where the learning is.</p>
+    <div class="row">
+      <button class="btn primary" id="go">Start the session</button>
+      <button class="btn" id="print">Printable worksheet</button>
+      ${hist.length ? '<button class="btn" id="hist">Past attempts ('+hist.length+')</button>' : ''}
+    </div>`;
+  document.getElementById("go").onclick = begin;
+  document.getElementById("print").onclick = printSheet;
+  const h = document.getElementById("hist");
+  if(h) h.onclick = screenHistory;
+}
+
+function begin(){
+  prep(); idx = 0; answers = []; startedAt = Date.now();
+  tick = setInterval(()=>{ const el=document.getElementById("clock"); if(el) el.textContent = fmt(elapsed()); }, 1000);
+  screenQ();
+}
+function elapsed(){ return Math.floor((Date.now()-startedAt)/1000); }
+
+function screenQ(){
+  const q = DATA.questions[order[idx]];
+  const pct = Math.round((idx/order.length)*100);
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="meta"><span>Station <b>${idx+1}</b> / ${order.length}</span>
+      <span>Correct <b>${answers.filter(a=>a.ok).length}</b> / ${answers.length}</span>
+      <span id="clock">${fmt(elapsed())}</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="chips">
+      <span class="chip ev">${esc(q.cat)}</span><span class="chip lvl">${esc(q.lvl)}</span>
+    </div>
+    <p class="q">${esc(q.q)}</p>
+    <div class="opts">${q._opts.map((t,j)=>
+      `<button class="opt" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span>${esc(t)}</span></button>`).join("")}</div>
+    <div id="after"></div>`;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = ()=>answer(parseInt(b.dataset.j,10)));
+}
+
+function answer(j){
+  const q = DATA.questions[order[idx]];
+  const ok = j === q._a;
+  answers.push({cat:q.cat, ok, at:elapsed()});
+  document.querySelectorAll(".opt").forEach(b=>{
+    const bj = parseInt(b.dataset.j,10);
+    b.disabled = true;
+    if(bj === q._a) b.classList.add("correct");
+    else if(bj === j) b.classList.add("wrong");
+  });
+  const last = idx === order.length-1;
+  document.getElementById("after").innerHTML = `
+    <div class="why${ok ? "" : " miss"}"><b>${ok ? "Correct - why" : "Missed it - why"}</b>${esc(q.why)}</div>
+    <button class="btn primary" id="next">${last ? "See my report" : "Next question"}</button>`;
+  document.getElementById("next").onclick = ()=>{
+    if(last){ finish(); } else { idx++; screenQ(); }
+  };
+  document.getElementById("next").focus();
+}
+
+function finish(){
+  clearInterval(tick);
+  const total = answers.length, right = answers.filter(a=>a.ok).length;
+  const pct = Math.round(right/total*100);
+  const secs = elapsed();
+  const cats = {};
+  answers.forEach(a=>{ const c = cats[a.cat] = cats[a.cat] || {n:0,r:0}; c.n++; if(a.ok) c.r++; });
+  const rows = Object.entries(cats).map(([c,v])=>{
+    const p = Math.round(v.r/v.n*100);
+    return {c, r:v.r, n:v.n, p};
+  }).sort((a,b)=>a.p-b.p);
+  const weak = rows.filter(r=>r.p < 70).map(r=>r.c);
+
+  const rec = {date:DATA.date, day:DATA.day, ts:new Date().toISOString(), right, total, pct,
+               seconds:secs, cats:rows.map(r=>({c:r.c,r:r.r,n:r.n,p:r.p}))};
+  saveHistory(rec);
+
+  const verdict = pct>=90 ? "Outstanding. That is qualifying form."
+    : pct>=80 ? "Strong. Tighten the weak categories and you are there."
+    : pct>=70 ? "Solid base, but not yet safe. Drill the weak list tonight."
+    : pct>=55 ? "Below the bar. This is fixable, but it needs real reps."
+    : "Rough round. Do not shrug it off &mdash; reread every explanation above, then run it again.";
+
+  const summary =
+`${DATA.student} - ${DATA.day} (${DATA.date})
+Score: ${right}/${total} (${pct}%)  Time: ${fmt(secs)}
+By event:
+${rows.map(r=>`  ${r.c}: ${r.r}/${r.n} (${r.p}%)`).join("\n")}
+Weak spots: ${weak.length ? weak.join(", ") : "none below 70%"}`;
+
+  document.getElementById("app").innerHTML = `
+    <p class="eyebrow">${esc(DATA.date)} &middot; ${esc(DATA.day)}</p>
+    <h1>${esc(DATA.student)}'s Round Report</h1>
+    <div class="scores">
+      <div><div class="big">${pct}%</div><div class="sub" style="margin:4px 0 0">${right} of ${total} correct</div></div>
+      <div><div class="big">${fmt(secs)}</div><div class="sub" style="margin:4px 0 0">time on task</div></div>
+    </div>
+    <div class="why"><b>Coach's read</b>${verdict}</div>
+    <h2>Accuracy by event</h2>
+    <table><thead><tr><th>Event</th><th class="num">Right</th><th class="num">Score</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${esc(r.c)}</td><td class="num">${r.r}/${r.n}</td>
+      <td class="num ${r.p>=70?"tag-ok":"tag-bad"}">${r.p}%</td></tr>`).join("")}
+    </tbody></table>
+    <h2>Drill these next</h2>
+    <p class="sub">${weak.length ? weak.map(esc).join(" \u00b7 ") : "Nothing under 70 percent. Step the ladder up tomorrow."}</p>
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" id="copy">Copy summary for coach</button>
+      <button class="btn" id="again">Run it again</button>
+      <button class="btn" id="print2">Printable worksheet</button>
+    </div>
+    <p class="hint" id="copied"></p>`;
+  document.getElementById("again").onclick = screenStart;
+  document.getElementById("print2").onclick = printSheet;
+  document.getElementById("copy").onclick = ()=>{
+    const ta = document.createElement("textarea");
+    ta.value = summary; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); document.getElementById("copied").textContent =
+      "Copied. Paste it into an email or text to Dad."; }
+    catch(e){ document.getElementById("copied").textContent = "Copy failed - select the table above manually."; }
+    document.body.removeChild(ta);
+  };
+}
+
+/* ---------- history (localStorage, device-only) ---------- */
+function loadHistory(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }catch(e){ return []; }
+}
+function saveHistory(rec){
+  try{ const h = loadHistory(); h.push(rec); localStorage.setItem(KEY, JSON.stringify(h.slice(-20))); }catch(e){}
+}
+function screenHistory(){
+  const h = loadHistory();
+  document.getElementById("app").innerHTML = `
+    <h1>Past attempts</h1>
+    <p class="sub">Saved in this browser only. Nothing leaves the device.</p>
+    <table><thead><tr><th>When</th><th class="num">Score</th><th class="num">Time</th></tr></thead><tbody>
+    ${h.slice().reverse().map(r=>`<tr><td>${esc(new Date(r.ts).toLocaleString())}</td>
+      <td class="num">${r.right}/${r.total} (${r.pct}%)</td><td class="num">${fmt(r.seconds)}</td></tr>`).join("")}
+    </tbody></table>
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="back">Back</button></div>`;
+  document.getElementById("back").onclick = screenStart;
+}
+
+/* ---------- printable worksheet ---------- */
+function printSheet(){
+  prep();
+  const s = document.getElementById("sheet");
+  s.innerHTML = `<h1>${esc(DATA.student)} &middot; ${esc(DATA.day)} Worksheet &middot; ${esc(DATA.date)}</h1>
+    <p>${esc(DATA.track)}<br>Focus: ${esc(DATA.focus)} &nbsp;|&nbsp; Target: ${DATA.target_minutes} minutes</p>
+    <hr>
+    ${order.map((oi,n)=>{ const q=DATA.questions[oi]; return `<div class="item">
+      <div><strong>${n+1}. </strong>${esc(q.q)} <em>(${esc(q.cat)})</em></div>
+      <ol type="A">${q._opts.map(t=>`<li>${esc(t)}</li>`).join("")}</ol></div>`; }).join("")}
+    <hr><h2>Answer key</h2>
+    <div>${order.map((oi,n)=>{ const q=DATA.questions[oi];
+      return `${n+1}. ${"ABCD"[q._a]}`; }).join(" &nbsp; ")}</div>`;
+  window.print();
+}
+
+document.getElementById("foot").textContent =
+  "Scores save in this browser only (localStorage). Nothing is uploaded. Set for " +
+  DATA.student + ", " + DATA.grade + " - " + DATA.date + ".";
+prep();
+screenStart();
+</script>
+
+</body>
+</html>
